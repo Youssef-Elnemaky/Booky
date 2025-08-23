@@ -16,7 +16,7 @@ namespace BookyWeb.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            var categoryList = categoryRepo.GetAll().OrderBy(c=>c.DisplayOrder);
+            var categoryList = categoryRepo.GetAll().OrderBy(c => c.DisplayOrder).ToList();
 
             return View("Index", categoryList);
         }
