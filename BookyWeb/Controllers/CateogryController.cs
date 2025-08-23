@@ -6,17 +6,17 @@ namespace BookyWeb.Controllers
 {
     public class CategoryController : Controller
     {
-        private readonly ICategoryRepository categoryRepo;
+        private readonly IUnitOfWork unitOfWork;
 
-        public CategoryController(ICategoryRepository categoryRepo)
+        public CategoryController(IUnitOfWork unitOfWork)
         {
-            this.categoryRepo = categoryRepo;
+            this.unitOfWork = unitOfWork;
         }
 
         [HttpGet]
         public IActionResult Index()
         {
-            var categoryList = categoryRepo.GetAll().OrderBy(c => c.DisplayOrder).ToList();
+            var categoryList = unitOfWork.Category.GetAll().OrderBy(c => c.DisplayOrder).ToList();
 
             return View("Index", categoryList);
         }
@@ -32,8 +32,8 @@ namespace BookyWeb.Controllers
         {
             if (ModelState.IsValid)
             {
-                categoryRepo.Add(newCategory);
-                categoryRepo.Save();
+                unitOfWork.Category.Add(newCategory);
+                unitOfWork.Category.Save();
                 TempData["success"] = "Category created successfully.";
                 return RedirectToAction("Index");
             }
@@ -45,7 +45,7 @@ namespace BookyWeb.Controllers
         {
             if(id == 0) return NotFound();
 
-            var model = categoryRepo.Get(c => c.Id == id);
+            var model = unitOfWork.Category.Get(c => c.Id == id);
             if(model == null) return NotFound();
 
             return View("Edit", model);
@@ -56,8 +56,8 @@ namespace BookyWeb.Controllers
         {
             if (ModelState.IsValid)
             {
-                categoryRepo.Update(category);
-                categoryRepo.Save();
+                unitOfWork.Category.Update(category);
+                unitOfWork.Category.Save();
                 TempData["success"] = "Category updated successfully.";
                 return RedirectToAction("Index");
             }
@@ -70,7 +70,7 @@ namespace BookyWeb.Controllers
         {
             if(id == 0) return NotFound();
             
-            var model = categoryRepo.Get(c=>c.Id == id);
+            var model = unitOfWork.Category.Get(c=>c.Id == id);
             if(model == null) return NotFound();
             
             return View("Delete", model);
@@ -79,9 +79,9 @@ namespace BookyWeb.Controllers
         [HttpPost]
         public IActionResult ConfirmDelete(int id)
         {
-            var category = categoryRepo.Get(c=>c.Id==id);
-            categoryRepo.Delete(category);
-            categoryRepo.Save();
+            var category = unitOfWork.Category.Get(c=>c.Id==id);
+            unitOfWork.Category.Delete(category);
+            unitOfWork.Category.Save();
             TempData["success"] = "Category deleted successfully.";
             return RedirectToAction("Index");
         }
