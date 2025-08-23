@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Booky.DataAccess.Repositries.IRepository;
 
-namespace BookyWeb.Controllers
+namespace BookyWeb.Areas.Admin.Controllers
 {
     public class CategoryController : Controller
     {
