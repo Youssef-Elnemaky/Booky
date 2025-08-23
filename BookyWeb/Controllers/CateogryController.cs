@@ -39,5 +39,26 @@ namespace BookyWeb.Controllers
             return View("Create");
         }
 
+        [HttpGet]
+        public IActionResult Edit(int id)
+        {
+            var model = categoryRepo.GetById(id);
+            if(model == null) return NotFound();
+            
+            return View("Edit", model);
+        }
+
+        [HttpPost]
+        public IActionResult Edit(Category category)
+        {
+            if (ModelState.IsValid)
+            {
+                categoryRepo.Update(category);
+                categoryRepo.Save();
+                return RedirectToAction("Index");
+            }
+
+            return View("Edit");
+        }
     }
 }
