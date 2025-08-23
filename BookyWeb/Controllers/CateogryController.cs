@@ -42,6 +42,8 @@ namespace BookyWeb.Controllers
         [HttpGet]
         public IActionResult Edit(int id)
         {
+            if(id == 0) return NotFound();
+            
             var model = categoryRepo.GetById(id);
             if(model == null) return NotFound();
             
@@ -59,6 +61,25 @@ namespace BookyWeb.Controllers
             }
 
             return View("Edit");
+        }
+
+        [HttpGet]
+        public IActionResult Delete(int id)
+        {
+            if(id == 0) return NotFound();
+            
+            var model = categoryRepo.GetById(id);
+            if(model == null) return NotFound();
+            
+            return View("Delete", model);
+        }
+
+        [HttpPost]
+        public IActionResult ConfirmDelete(int id)
+        {
+            categoryRepo.Delete(id);
+            categoryRepo.Save();
+            return RedirectToAction("Index");
         }
     }
 }
