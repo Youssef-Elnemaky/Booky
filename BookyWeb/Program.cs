@@ -1,4 +1,5 @@
 using BookyWeb.Models.Data;
+using BookyWeb.Repositries;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookyWeb
@@ -13,6 +14,8 @@ namespace BookyWeb
             builder.Services.AddControllersWithViews();
             builder.Services.AddDbContext<AppDbContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DevConStr")));
+
+            builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 
             var app = builder.Build();
 
