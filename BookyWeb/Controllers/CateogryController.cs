@@ -34,6 +34,7 @@ namespace BookyWeb.Controllers
             {
                 categoryRepo.Add(newCategory);
                 categoryRepo.Save();
+                TempData["success"] = "Category created successfully.";
                 return RedirectToAction("Index");
             }
             return View("Create");
@@ -46,7 +47,7 @@ namespace BookyWeb.Controllers
             
             var model = categoryRepo.GetById(id);
             if(model == null) return NotFound();
-            
+
             return View("Edit", model);
         }
 
@@ -57,6 +58,7 @@ namespace BookyWeb.Controllers
             {
                 categoryRepo.Update(category);
                 categoryRepo.Save();
+                TempData["success"] = "Category updated successfully.";
                 return RedirectToAction("Index");
             }
 
@@ -79,6 +81,7 @@ namespace BookyWeb.Controllers
         {
             categoryRepo.Delete(id);
             categoryRepo.Save();
+            TempData["success"] = "Category deleted successfully.";
             return RedirectToAction("Index");
         }
     }
