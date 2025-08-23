@@ -1,5 +1,5 @@
-using BookyWeb.Models.Data;
-using BookyWeb.Repositries;
+using Booky.DataAccess.Data;
+using Booky.DataAccess.Repositries;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookyWeb

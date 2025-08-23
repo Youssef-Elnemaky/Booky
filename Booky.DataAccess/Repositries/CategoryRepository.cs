@@ -1,7 +1,7 @@
-﻿using BookyWeb.Models;
-using BookyWeb.Models.Data;
+﻿using Booky.Models;
+using Booky.DataAccess.Data;
 
-namespace BookyWeb.Repositries
+namespace Booky.DataAccess.Repositries
 {
     public class CategoryRepository : ICategoryRepository
     {

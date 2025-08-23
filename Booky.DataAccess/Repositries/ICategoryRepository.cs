@@ -1,6 +1,6 @@
-﻿using BookyWeb.Models;
+﻿using Booky.Models;
 
-namespace BookyWeb.Repositries
+namespace Booky.DataAccess.Repositries
 {
     public interface ICategoryRepository
     {

@@ -1,7 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Booky.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace BookyWeb.Models.Data.Config
+namespace Booky.DataAccess.Data.Config
 {
     public class CategoryConfig : IEntityTypeConfiguration<Category>
     {
