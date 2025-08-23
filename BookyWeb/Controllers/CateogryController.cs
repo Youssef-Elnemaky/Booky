@@ -1,6 +1,6 @@
 ﻿using Booky.Models;
-using Booky.DataAccess.Repositries;
 using Microsoft.AspNetCore.Mvc;
+using Booky.DataAccess.Repositries.IRepository;
 
 namespace BookyWeb.Controllers
 {
@@ -44,8 +44,8 @@ namespace BookyWeb.Controllers
         public IActionResult Edit(int id)
         {
             if(id == 0) return NotFound();
-            
-            var model = categoryRepo.GetById(id);
+
+            var model = categoryRepo.Get(c => c.Id == id);
             if(model == null) return NotFound();
 
             return View("Edit", model);
@@ -70,7 +70,7 @@ namespace BookyWeb.Controllers
         {
             if(id == 0) return NotFound();
             
-            var model = categoryRepo.GetById(id);
+            var model = categoryRepo.Get(c=>c.Id == id);
             if(model == null) return NotFound();
             
             return View("Delete", model);
@@ -79,7 +79,8 @@ namespace BookyWeb.Controllers
         [HttpPost]
         public IActionResult ConfirmDelete(int id)
         {
-            categoryRepo.Delete(id);
+            var category = categoryRepo.Get(c=>c.Id==id);
+            categoryRepo.Delete(category);
             categoryRepo.Save();
             TempData["success"] = "Category deleted successfully.";
             return RedirectToAction("Index");

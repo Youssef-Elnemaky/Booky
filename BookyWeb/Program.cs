@@ -1,5 +1,6 @@
 using Booky.DataAccess.Data;
 using Booky.DataAccess.Repositries;
+using Booky.DataAccess.Repositries.IRepository;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookyWeb
