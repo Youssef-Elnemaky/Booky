@@ -1,3 +1,6 @@
+using BookyWeb.Models.Data;
+using Microsoft.EntityFrameworkCore;
+
 namespace BookyWeb
 {
     public class Program
@@ -8,6 +11,8 @@ namespace BookyWeb
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddDbContext<AppDbContext>(options =>
+            options.UseSqlServer(builder.Configuration.GetConnectionString("DevConStr")));
 
             var app = builder.Build();
 
