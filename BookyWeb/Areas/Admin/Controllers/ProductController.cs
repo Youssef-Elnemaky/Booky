@@ -1,6 +1,7 @@
 ﻿using Booky.DataAccess.Repositries.IRepository;
 using Booky.Models;
 using Booky.Models.ViewModels;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -9,10 +10,12 @@ namespace BookyWeb.Areas.Admin.Controllers
     public class ProductController : Controller
     {
         private readonly IUnitOfWork unitOfWork;
+        private readonly IWebHostEnvironment webHostEnvironment;
 
-        public ProductController(IUnitOfWork unitOfWork)
+        public ProductController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment)
         {
             this.unitOfWork = unitOfWork;
+            this.webHostEnvironment = webHostEnvironment;
         }
 
         [HttpGet]
@@ -47,6 +50,30 @@ namespace BookyWeb.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (productVM.File != null)
+                {
+                    // Generate unique filename
+                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(productVM.File.FileName);
+
+                    // Get path to wwwroot/images/products (for example)
+                    string uploadPath = Path.Combine(webHostEnvironment.WebRootPath, "images", "products");
+
+                    // Ensure folder exists
+                    if (!Directory.Exists(uploadPath))
+                        Directory.CreateDirectory(uploadPath);
+
+                    // Combine path and filename
+                    string filePath = Path.Combine(uploadPath, fileName);
+
+                    // Save file
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        productVM.File.CopyTo(fileStream);
+                    }
+
+                    // Store relative path in DB
+                    productVM.Product.ImageUrl = "/images/products/" + fileName;
+                }
                 // .Update is able to check the id
                 // If the id exists, it will update if not, it will create a new index
                 unitOfWork.Product.Update(productVM.Product);
@@ -61,7 +88,7 @@ namespace BookyWeb.Areas.Admin.Controllers
             {
                 productVM.CategoryList = unitOfWork.Category.GetAll()
                     .Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Name });
-                return View("Create", productVM);
+                return View("Upsert", productVM);
             }
         }
 

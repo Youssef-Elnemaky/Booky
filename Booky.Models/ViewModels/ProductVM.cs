@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
@@ -14,5 +15,7 @@ namespace Booky.Models.ViewModels
 
         [ValidateNever]
         public IEnumerable<SelectListItem> CategoryList { get; set; }
+
+        public IFormFile File { get; set; }
     }
 }
