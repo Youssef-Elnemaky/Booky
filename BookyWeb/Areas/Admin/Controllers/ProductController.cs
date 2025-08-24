@@ -64,5 +64,30 @@ namespace BookyWeb.Areas.Admin.Controllers
 
             return View("Edit", product);
         }
+
+        [HttpGet]
+        public IActionResult Delete(int id)
+        {
+            if(id == 0) return NotFound();
+
+            var product = unitOfWork.Product.Get(p=>p.Id == id);
+            if(product == null) return NotFound();
+
+            return View("Delete", product);
+        }
+
+        [HttpPost]
+        public IActionResult ConfirmDelete(int id)
+        {
+            if (id == 0) return NotFound();
+
+            var product = unitOfWork.Product.Get(p=>p.Id ==id);
+            if(product == null) return NotFound();
+
+            unitOfWork.Product.Delete(product);
+            unitOfWork.Save();
+            TempData["success"] = "Product deleted successfully.";
+            return RedirectToAction("Index");
+        }
     }
 }
