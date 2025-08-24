@@ -15,5 +15,7 @@ namespace Booky.Models
         [Display(Name = "Display Order")]
         [Range(1,100, ErrorMessage = "Display Order must be in range of 1 - 100")]
         public int DisplayOrder { get; set; }
+
+        public ICollection<Product> Products { get; set; } = new List<Product>();
     }
 }

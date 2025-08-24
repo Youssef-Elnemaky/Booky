@@ -26,6 +26,11 @@ namespace Booky.DataAccess.Data.Config
             builder.Property(p => p.Price50).HasColumnType("DECIMAL(18,2)");
             builder.Property(p => p.Price100).HasColumnType("DECIMAL(18,2)");
 
+            // product-category relationship
+            builder.HasOne(p => p.Category)
+                .WithMany(c => c.Products)
+                .HasForeignKey(p => p.CategoryId)
+                .IsRequired();
 
             //seeding
             builder.HasData(
@@ -39,7 +44,8 @@ namespace Booky.DataAccess.Data.Config
                     Price = 11,
                     ListPrice = 50,
                     Price50 = 500,
-                    Price100 = 1100
+                    Price100 = 1100,
+                    CategoryId = 1
                 },
                 new Product
                 {
@@ -51,7 +57,8 @@ namespace Booky.DataAccess.Data.Config
                     Price = 15,
                     ListPrice = 60,
                     Price50 = 550,
-                    Price100 = 1050
+                    Price100 = 1050,
+                    CategoryId = 2
                 },
                 new Product
                 {
@@ -63,7 +70,8 @@ namespace Booky.DataAccess.Data.Config
                     Price = 18,
                     ListPrice = 65,
                     Price50 = 600,
-                    Price100 = 1150
+                    Price100 = 1150,
+                    CategoryId = 3
                 },
                 new Product
                 {
@@ -75,7 +83,8 @@ namespace Booky.DataAccess.Data.Config
                     Price = 20,
                     ListPrice = 70,
                     Price50 = 650,
-                    Price100 = 1200
+                    Price100 = 1200,
+                    CategoryId = 1
                 },
                 new Product
                 {
@@ -87,7 +96,8 @@ namespace Booky.DataAccess.Data.Config
                     Price = 22,
                     ListPrice = 75,
                     Price50 = 700,
-                    Price100 = 1250
+                    Price100 = 1250,
+                    CategoryId = 2
                 },
                 new Product
                 {
@@ -99,7 +109,8 @@ namespace Booky.DataAccess.Data.Config
                     Price = 25,
                     ListPrice = 80,
                     Price50 = 750,
-                    Price100 = 1300
+                    Price100 = 1300,
+                    CategoryId = 1
                 }
             );
 
