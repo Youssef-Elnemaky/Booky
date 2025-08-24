@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -9,6 +10,7 @@ namespace Booky.Models
 {
     public class Product
     {
+        
         public int Id { get; set; }
 
         [Required]
@@ -44,7 +46,10 @@ namespace Booky.Models
         [Range(1, 1000)]
         public decimal Price100 { get; set; }
 
+        [Display(Name ="Category")]
         public int CategoryId { get; set; }
+
+        [ValidateNever]
         public Category Category { get; set; }
     }
 }

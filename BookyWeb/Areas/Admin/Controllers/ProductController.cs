@@ -1,6 +1,8 @@
 ﻿using Booky.DataAccess.Repositries.IRepository;
 using Booky.Models;
+using Booky.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace BookyWeb.Areas.Admin.Controllers
 {
@@ -24,20 +26,29 @@ namespace BookyWeb.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            return View("Create");
+            var productVM = new ProductVM();
+            productVM.Product = new Product();
+            productVM.CategoryList = unitOfWork.Category.GetAll()
+                .Select(c=>new SelectListItem { Value = c.Id.ToString(), Text = c.Name});
+
+            return View("Create", productVM);
         }
 
         [HttpPost]
-        public IActionResult Create(Product product)
+        public IActionResult Create(ProductVM productVM)
         {
             if (ModelState.IsValid)
             {
-                unitOfWork.Product.Add(product);
+                unitOfWork.Product.Add(productVM.Product);
                 unitOfWork.Save();
                 TempData["success"] = "Product created successfully.";
                 return RedirectToAction("Index");
+            } else
+            {
+                productVM.CategoryList = unitOfWork.Category.GetAll()
+                    .Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Name });
+                return View("Create", productVM);
             }
-            return View("Create");
         }
 
         [HttpGet]
