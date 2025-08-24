@@ -25,6 +25,7 @@ namespace Booky.DataAccess.Data.Config
             builder.Property(p => p.ListPrice).HasColumnType("DECIMAL(18,2)");
             builder.Property(p => p.Price50).HasColumnType("DECIMAL(18,2)");
             builder.Property(p => p.Price100).HasColumnType("DECIMAL(18,2)");
+            builder.Property(p => p.ImageUrl).HasColumnType("VARCHAR(255)");
 
             // product-category relationship
             builder.HasOne(p => p.Category)
@@ -45,7 +46,8 @@ namespace Booky.DataAccess.Data.Config
                     ListPrice = 50,
                     Price50 = 500,
                     Price100 = 1100,
-                    CategoryId = 1
+                    CategoryId = 1,
+                    ImageUrl = ""
                 },
                 new Product
                 {
@@ -58,7 +60,8 @@ namespace Booky.DataAccess.Data.Config
                     ListPrice = 60,
                     Price50 = 550,
                     Price100 = 1050,
-                    CategoryId = 2
+                    CategoryId = 2,
+                    ImageUrl = ""
                 },
                 new Product
                 {
@@ -71,7 +74,8 @@ namespace Booky.DataAccess.Data.Config
                     ListPrice = 65,
                     Price50 = 600,
                     Price100 = 1150,
-                    CategoryId = 3
+                    CategoryId = 3,
+                    ImageUrl = ""
                 },
                 new Product
                 {
@@ -84,7 +88,8 @@ namespace Booky.DataAccess.Data.Config
                     ListPrice = 70,
                     Price50 = 650,
                     Price100 = 1200,
-                    CategoryId = 1
+                    CategoryId = 1,
+                    ImageUrl = ""
                 },
                 new Product
                 {
@@ -97,7 +102,8 @@ namespace Booky.DataAccess.Data.Config
                     ListPrice = 75,
                     Price50 = 700,
                     Price100 = 1250,
-                    CategoryId = 2
+                    CategoryId = 2,
+                    ImageUrl = ""
                 },
                 new Product
                 {
@@ -110,7 +116,8 @@ namespace Booky.DataAccess.Data.Config
                     ListPrice = 80,
                     Price50 = 750,
                     Price100 = 1300,
-                    CategoryId = 1
+                    CategoryId = 1,
+                    ImageUrl = ""
                 }
             );
 

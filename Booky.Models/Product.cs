@@ -51,5 +51,8 @@ namespace Booky.Models
 
         [ValidateNever]
         public Category Category { get; set; }
+
+        [Display(Name = "Image")]
+        public string ImageUrl { get; set; }
     }
 }
