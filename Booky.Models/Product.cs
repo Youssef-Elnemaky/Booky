@@ -18,6 +18,9 @@ namespace Booky.Models
 
         [Required]
         public string ISBN { get; set; }
+
+        [MaxLength(100, ErrorMessage ="Author name cannot be more than 100 characters")]
+        [MinLength(3, ErrorMessage ="Author name must be at least 3 characters")]
         public string Author { get; set; }
         public string Description { get; set; }
 
