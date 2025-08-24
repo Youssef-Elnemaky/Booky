@@ -40,6 +40,29 @@ namespace BookyWeb.Areas.Admin.Controllers
             return View("Create");
         }
 
+        [HttpGet]
+        public IActionResult Edit(int id)
+        {
+            if (id == 0) return NotFound();
 
+            var product = unitOfWork.Product.Get(p => p.Id == id);
+            if(product == null) return NotFound();
+
+            return View("Edit", product);
+        }
+
+        [HttpPost]
+        public IActionResult Edit(Product product)
+        {
+            if(ModelState.IsValid)
+            {
+                unitOfWork.Product.Update(product);
+                unitOfWork.Save();
+                TempData["success"] = "Product updated successfully.";
+                return RedirectToAction("Index");
+            }
+
+            return View("Edit", product);
+        }
     }
 }
