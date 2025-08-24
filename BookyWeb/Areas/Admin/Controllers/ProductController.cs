@@ -24,24 +24,38 @@ namespace BookyWeb.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public IActionResult Create()
-        {
+        public IActionResult Upsert(int? id)
+        {   
             var productVM = new ProductVM();
-            productVM.Product = new Product();
             productVM.CategoryList = unitOfWork.Category.GetAll()
-                .Select(c=>new SelectListItem { Value = c.Id.ToString(), Text = c.Name});
+                    .Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Name });
 
-            return View("Create", productVM);
+            // creating (inserting) a new product
+            if (id == null || id == 0)
+            {
+                productVM.Product = new Product();
+            } else
+            {
+                productVM.Product = unitOfWork.Product.Get(p => p.Id == id);
+            }
+
+            return View("Upsert", productVM);
         }
 
         [HttpPost]
-        public IActionResult Create(ProductVM productVM)
+        public IActionResult Upsert(ProductVM productVM)
         {
             if (ModelState.IsValid)
             {
-                unitOfWork.Product.Add(productVM.Product);
+                // .Update is able to check the id
+                // If the id exists, it will update if not, it will create a new index
+                unitOfWork.Product.Update(productVM.Product);
+                // Notification
+                if (productVM.Product.Id == 0) TempData["success"] = "Product created successfully.";
+                else TempData["success"] = "Product updated successfully.";
+
                 unitOfWork.Save();
-                TempData["success"] = "Product created successfully.";
+
                 return RedirectToAction("Index");
             } else
             {
@@ -51,30 +65,6 @@ namespace BookyWeb.Areas.Admin.Controllers
             }
         }
 
-        [HttpGet]
-        public IActionResult Edit(int id)
-        {
-            if (id == 0) return NotFound();
-
-            var product = unitOfWork.Product.Get(p => p.Id == id);
-            if(product == null) return NotFound();
-
-            return View("Edit", product);
-        }
-
-        [HttpPost]
-        public IActionResult Edit(Product product)
-        {
-            if(ModelState.IsValid)
-            {
-                unitOfWork.Product.Update(product);
-                unitOfWork.Save();
-                TempData["success"] = "Product updated successfully.";
-                return RedirectToAction("Index");
-            }
-
-            return View("Edit", product);
-        }
 
         [HttpGet]
         public IActionResult Delete(int id)
