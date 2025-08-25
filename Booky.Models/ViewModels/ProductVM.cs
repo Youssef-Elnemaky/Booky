@@ -16,6 +16,7 @@ namespace Booky.Models.ViewModels
         [ValidateNever]
         public IEnumerable<SelectListItem> CategoryList { get; set; }
 
-        public IFormFile File { get; set; }
+        [ValidateNever]
+        public IFormFile? File { get; set; }
     }
 }

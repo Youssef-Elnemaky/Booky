@@ -4,6 +4,7 @@ using Booky.Models.ViewModels;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Hosting;
 
 namespace BookyWeb.Areas.Admin.Controllers
 {
@@ -50,8 +51,28 @@ namespace BookyWeb.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
+                if(productVM.Product.Id == 0 && productVM.File == null)
+                {
+                    ModelState.AddModelError("File", "Must upload an image when creating a product.");
+                    productVM.CategoryList = unitOfWork.Category.GetAll()
+                        .Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Name });
+                    return View("Upsert", productVM);
+                }
                 if (productVM.File != null)
                 {
+                    // Remove old Image if it's there
+                    if (!string.IsNullOrWhiteSpace(productVM.Product.ImageUrl))
+                    {
+                        var wwwRootPath = webHostEnvironment.WebRootPath;
+
+                        // Remove the leading slash from ImageUrl and combine with wwwroot
+                        var oldImagePath = Path.Combine(wwwRootPath, productVM.Product.ImageUrl.TrimStart('/'));
+
+                        if (System.IO.File.Exists(oldImagePath))
+                        {
+                            System.IO.File.Delete(oldImagePath);
+                        }
+                    }
                     // Generate unique filename
                     string fileName = Guid.NewGuid().ToString() + Path.GetExtension(productVM.File.FileName);
 
