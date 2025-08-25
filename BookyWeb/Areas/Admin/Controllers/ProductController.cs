@@ -23,7 +23,7 @@ namespace BookyWeb.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            var products = unitOfWork.Product.GetAll();
+            var products = unitOfWork.Product.GetAll(includeProperties: "Category");
 
             return View("Index", products);
         }
@@ -61,13 +61,19 @@ namespace BookyWeb.Areas.Admin.Controllers
                 {
                     productVM.Product.ImageUrl = fileService.Replace(productVM.Product.ImageUrl, productVM.File, "images/products");
                 }
-                // .Update is able to check the id
-                // If the id exists, it will update if not, it will create a new index
-                unitOfWork.Product.Update(productVM.Product);
-                // Notification
 
-                if (productVM.Product.Id == 0) TempData["success"] = "Product created successfully.";
-                else TempData["success"] = "Product updated successfully.";
+                if (productVM.Product.Id == 0)
+                {
+                    unitOfWork.Product.Add(productVM.Product);
+                    // Notification
+                    TempData["success"] = "Product created successfully.";
+                }
+                else 
+                { 
+                    unitOfWork.Product.Update(productVM.Product);
+                    // Notification
+                    TempData["success"] = "Product updated successfully.";
+                }
 
                 unitOfWork.Save();
 

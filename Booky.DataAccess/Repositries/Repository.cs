@@ -35,14 +35,35 @@ namespace Booky.DataAccess.Repositries
             dbSet.RemoveRange(entities);
         }
 
-        public T Get(Expression<Func<T,bool>> filter)
+        public T Get(Expression<Func<T,bool>> filter, string? includeProperties = null)
         {
-            return dbSet.Where(filter).FirstOrDefault();
+            IQueryable<T> query = dbSet;
+            
+            if (!string.IsNullOrWhiteSpace(includeProperties))
+            {
+                foreach(var includeProp in includeProperties
+                    .Split([','], StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(includeProp);
+                }
+            }
+            return query.Where(filter).FirstOrDefault();
         }
 
-        public IEnumerable<T> GetAll()
+        public IEnumerable<T> GetAll(string? includeProperties = null)
         {
-            return dbSet.ToList();
+            IQueryable<T> query = dbSet;
+
+            if (!string.IsNullOrWhiteSpace(includeProperties))
+            {
+                foreach (var includeProp in includeProperties
+                    .Split([','], StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(includeProp);
+                }
+            }
+
+            return query.ToList();
         }
     }
 }
