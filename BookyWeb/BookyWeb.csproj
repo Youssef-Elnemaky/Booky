@@ -18,6 +18,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Booky.DataAccess\Booky.DataAccess.csproj" />
     <ProjectReference Include="..\Booky.Models\Booky.Models.csproj" />
+    <ProjectReference Include="..\Booky.Services\Booky.Services.csproj" />
   </ItemGroup>
 
   <ItemGroup>

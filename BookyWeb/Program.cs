@@ -1,6 +1,7 @@
 using Booky.DataAccess.Data;
 using Booky.DataAccess.Repositries;
 using Booky.DataAccess.Repositries.IRepository;
+using Booky.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookyWeb
@@ -17,7 +18,11 @@ namespace BookyWeb
             options.UseSqlServer(builder.Configuration.GetConnectionString("DevConStr")));
 
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-
+            builder.Services.AddScoped<IFileService>(sp =>
+            {
+                var env = sp.GetRequiredService<IWebHostEnvironment>();
+                return new LocalFileService(env.WebRootPath);
+            });
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
