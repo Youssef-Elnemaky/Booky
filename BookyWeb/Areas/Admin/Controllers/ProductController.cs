@@ -1,4 +1,5 @@
-﻿using Booky.DataAccess.Repositries.IRepository;
+﻿using Booky.DataAccess.Repositries;
+using Booky.DataAccess.Repositries.IRepository;
 using Booky.Models;
 using Booky.Models.ViewModels;
 using Booky.Services;
@@ -91,29 +92,29 @@ namespace BookyWeb.Areas.Admin.Controllers
                     .Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Name });
         }
 
+
         [HttpGet]
-        public IActionResult Delete(int id)
+        public IActionResult GetAll()
         {
-            if(id == 0) return NotFound();
-
-            var product = unitOfWork.Product.Get(p=>p.Id == id);
-            if(product == null) return NotFound();
-
-            return View("Delete", product);
+            List<Product> products = unitOfWork.Product.GetAll(includeProperties: "Category").ToList();
+            return Json(new {data = products});
         }
 
-        [HttpPost]
-        public IActionResult ConfirmDelete(int id)
+        [HttpDelete]
+        public IActionResult Delete(int? id)
         {
-            if (id == 0) return NotFound();
+            var productToBeDeleted = unitOfWork.Product.Get(u => u.Id == id);
+            if (productToBeDeleted == null)
+            {
+                return Json(new { success = false, message = "Error while deleting" });
+            }
 
-            var product = unitOfWork.Product.Get(p=>p.Id ==id);
-            if(product == null) return NotFound();
+            fileService.Delete(productToBeDeleted.ImageUrl);
 
-            unitOfWork.Product.Delete(product);
+            unitOfWork.Product.Delete(productToBeDeleted);
             unitOfWork.Save();
-            TempData["success"] = "Product deleted successfully.";
-            return RedirectToAction("Index");
+
+            return Json(new { success = true, message = "Delete Successful" });
         }
     }
 }

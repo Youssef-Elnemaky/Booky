@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Booky.Models
 {
@@ -16,6 +17,7 @@ namespace Booky.Models
         [Range(1,100, ErrorMessage = "Display Order must be in range of 1 - 100")]
         public int DisplayOrder { get; set; }
 
+        [JsonIgnore]
         public ICollection<Product> Products { get; set; } = new List<Product>();
     }
 }
