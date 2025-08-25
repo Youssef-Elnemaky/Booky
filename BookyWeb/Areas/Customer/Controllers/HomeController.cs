@@ -22,6 +22,12 @@ namespace BookyWeb.Areas.Customer.Controllers
             return View("Index", products);
         }
 
+        public IActionResult Details(int productId)
+        {
+            var product = unitOfWork.Product.Get(p => p.Id == productId, includeProperties: "Category");
+            return View("Details", product);
+        }
+
         public IActionResult Privacy()
         {
             return View();
