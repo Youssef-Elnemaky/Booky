@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using Booky.DataAccess.Repositries.IRepository;
 using Booky.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,15 +8,18 @@ namespace BookyWeb.Areas.Customer.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IUnitOfWork unitOfWork;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, IUnitOfWork unitOfWork)
         {
             _logger = logger;
+            this.unitOfWork = unitOfWork;
         }
 
         public IActionResult Index()
         {
-            return View();
+            IEnumerable<Product> products = unitOfWork.Product.GetAll(includeProperties: "Category");
+            return View("Index", products);
         }
 
         public IActionResult Privacy()
