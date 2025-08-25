@@ -30,7 +30,7 @@ namespace Booky.Services
                 file.CopyTo(stream);
             }
 
-            return $"{folder}/{fileName}";
+            return $"/{folder}/{fileName}";
         }
 
         public void Delete(string path)
