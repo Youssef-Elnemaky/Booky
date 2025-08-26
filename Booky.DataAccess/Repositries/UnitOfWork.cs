@@ -18,6 +18,8 @@ namespace Booky.DataAccess.Repositries
 
         public IShoppingCartRepository ShoppingCart { get; private set; }
 
+        public IApplicationUserRepository ApplicationUser { get; private set; }
+
         public UnitOfWork(AppDbContext context)
         {
             this.context = context;
@@ -25,6 +27,7 @@ namespace Booky.DataAccess.Repositries
             Product = new ProductRepository(context);
             Company = new CompanyRepository(context);
             ShoppingCart = new ShoppingCartRepository(context);
+            ApplicationUser = new ApplicationUserRepository(context);
         }
 
         public void Save()
