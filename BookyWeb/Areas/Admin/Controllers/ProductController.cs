@@ -119,7 +119,7 @@ namespace BookyWeb.Areas.Admin.Controllers
             unitOfWork.Product.Delete(productToBeDeleted);
             unitOfWork.Save();
 
-            return Json(new { success = true, message = "Delete Successful" });
+            return Json(new { success = true, message = "Product deleted successfully." });
         }
     }
 }
