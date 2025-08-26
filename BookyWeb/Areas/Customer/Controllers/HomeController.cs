@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BookyWeb.Areas.Customer.Controllers
 {
+    [Area(areaName: "Customer")]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;

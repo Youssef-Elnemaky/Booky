@@ -1,7 +1,11 @@
 using Booky.DataAccess.Data;
 using Booky.DataAccess.Repositries;
 using Booky.DataAccess.Repositries.IRepository;
+using Booky.Models;
 using Booky.Services;
+using Booky.Utility;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookyWeb
@@ -16,6 +20,20 @@ namespace BookyWeb
             builder.Services.AddControllersWithViews();
             builder.Services.AddDbContext<AppDbContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DevConStr")));
+
+
+            builder.Services.AddIdentity<ApplicationUser,IdentityRole>(op=>op.User.RequireUniqueEmail=true)
+                .AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
+
+            builder.Services.ConfigureApplicationCookie(options =>
+                {
+                    options.LoginPath = $"/Identity/Account/Login";
+                    options.LogoutPath = $"/Identity/Account/Logout";
+                    options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
+                });
+            builder.Services.AddScoped<IEmailSender, EmailSender>();
+
+            builder.Services.AddRazorPages();
 
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IFileService>(sp =>
@@ -37,8 +55,9 @@ namespace BookyWeb
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
+            app.MapRazorPages();
 
             app.MapControllerRoute(
                 name: "default",

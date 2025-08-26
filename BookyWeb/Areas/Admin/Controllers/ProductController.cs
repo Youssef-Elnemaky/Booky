@@ -3,6 +3,8 @@ using Booky.DataAccess.Repositries.IRepository;
 using Booky.Models;
 using Booky.Models.ViewModels;
 using Booky.Services;
+using Booky.Utility;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -10,6 +12,9 @@ using Microsoft.Extensions.Hosting;
 
 namespace BookyWeb.Areas.Admin.Controllers
 {
+    [Area(areaName: "Admin")]
+    [Authorize(Roles = SD.Role_Admin)]
+
     public class ProductController : Controller
     {
         private readonly IUnitOfWork unitOfWork;
