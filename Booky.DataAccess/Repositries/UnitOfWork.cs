@@ -16,12 +16,15 @@ namespace Booky.DataAccess.Repositries
 
         public ICompanyRepository Company { get; private set; }
 
+        public IShoppingCartRepository ShoppingCart { get; private set; }
+
         public UnitOfWork(AppDbContext context)
         {
             this.context = context;
             Category = new CategoryRepository(context);
             Product = new ProductRepository(context);
             Company = new CompanyRepository(context);
+            ShoppingCart = new ShoppingCartRepository(context);
         }
 
         public void Save()
