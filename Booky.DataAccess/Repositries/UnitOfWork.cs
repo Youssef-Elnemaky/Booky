@@ -20,6 +20,10 @@ namespace Booky.DataAccess.Repositries
 
         public IApplicationUserRepository ApplicationUser { get; private set; }
 
+        public IOrderHeaderRepository OrderHeader { get; private set; }
+
+        public IOrderDetailRepository OrderDetail { get; private set; }
+
         public UnitOfWork(AppDbContext context)
         {
             this.context = context;
@@ -28,6 +32,8 @@ namespace Booky.DataAccess.Repositries
             Company = new CompanyRepository(context);
             ShoppingCart = new ShoppingCartRepository(context);
             ApplicationUser = new ApplicationUserRepository(context);
+            OrderHeader = new OrderHeaderRepository(context);
+            OrderDetail = new OrderDetailRepository(context);
         }
 
         public void Save()
