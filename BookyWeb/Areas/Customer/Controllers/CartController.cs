@@ -71,6 +71,10 @@ namespace BookyWeb.Areas.Customer.Controllers
             return RedirectToAction("Index");
         }
        
+        public IActionResult Summary()
+        {
+            return View("Summary");
+        }
 
         private decimal GetPriceBasedOnQuantity(ShoppingCart shoppingCart)
         {
