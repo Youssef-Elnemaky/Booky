@@ -1,6 +1,8 @@
 using System.Diagnostics;
+using System.Security.Claims;
 using Booky.DataAccess.Repositries.IRepository;
 using Booky.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookyWeb.Areas.Customer.Controllers
@@ -23,10 +25,44 @@ namespace BookyWeb.Areas.Customer.Controllers
             return View("Index", products);
         }
 
+        [HttpGet]
         public IActionResult Details(int productId)
         {
             var product = unitOfWork.Product.Get(p => p.Id == productId, includeProperties: "Category");
-            return View("Details", product);
+            if(product == null) return NotFound();
+            
+            ShoppingCart cart = new ShoppingCart()
+            {
+                Product = product,
+                Count = 1,
+                ProductId = productId
+            };
+            
+            return View("Details", cart);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public IActionResult Details(ShoppingCart shoppingCart)
+        {
+            string userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value;
+            shoppingCart.ApplicationUserId = userId;
+
+            var shoppingCartDb = unitOfWork.ShoppingCart.Get(sc => 
+                sc.ApplicationUserId == userId && sc.ProductId == shoppingCart.ProductId);
+
+            if(shoppingCartDb == null)
+            {
+                // create a new one
+                unitOfWork.ShoppingCart.Add(shoppingCart);
+            } else
+            {
+                // update it
+                shoppingCartDb.Count += shoppingCart.Count;
+            }
+            unitOfWork.Save();
+
+            return RedirectToAction("Index");
         }
 
         public IActionResult Privacy()

@@ -35,13 +35,15 @@ namespace Booky.DataAccess.Repositries
             dbSet.RemoveRange(entities);
         }
 
-        public T Get(Expression<Func<T,bool>> filter, string? includeProperties = null)
+        public T Get(Expression<Func<T,bool>> filter, string? includeProperties = null, bool tracked = false)
         {
-            IQueryable<T> query = dbSet;
-            
+            IQueryable<T> query;
+            if (tracked == false) query = dbSet;
+            else query = dbSet.AsNoTracking();
+
             if (!string.IsNullOrWhiteSpace(includeProperties))
             {
-                foreach(var includeProp in includeProperties
+                foreach (var includeProp in includeProperties
                     .Split([','], StringSplitOptions.RemoveEmptyEntries))
                 {
                     query = query.Include(includeProp);
