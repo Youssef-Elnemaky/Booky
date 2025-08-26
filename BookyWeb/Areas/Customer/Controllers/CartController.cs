@@ -37,6 +37,41 @@ namespace BookyWeb.Areas.Customer.Controllers
             return View("Index", shoppingCartVM);
         }
 
+        public IActionResult Plus(int cartId)
+        {
+            var shoppingCart = _unitOfWork.ShoppingCart.Get(sc=>sc.Id == cartId);
+            if (shoppingCart == null) return NotFound();
+
+            shoppingCart.Count += 1;
+            _unitOfWork.ShoppingCart.Update(shoppingCart);
+            _unitOfWork.Save();
+
+            return RedirectToAction("Index");
+        }
+        public IActionResult Minus(int cartId)
+        {
+            var shoppingCart = _unitOfWork.ShoppingCart.Get(sc=>sc.Id == cartId);
+            if (shoppingCart == null) return NotFound();
+
+            shoppingCart.Count -= 1;
+            if (shoppingCart.Count <= 0) shoppingCart.Count = 1; 
+            _unitOfWork.ShoppingCart.Update(shoppingCart);
+            _unitOfWork.Save();
+
+            return RedirectToAction("Index");
+        }
+        public IActionResult Remove(int cartId)
+        {
+            var shoppingCart = _unitOfWork.ShoppingCart.Get(sc=>sc.Id == cartId);
+            if (shoppingCart == null) return NotFound();
+
+            _unitOfWork.ShoppingCart.Delete(shoppingCart);
+            _unitOfWork.Save();
+
+            return RedirectToAction("Index");
+        }
+       
+
         private decimal GetPriceBasedOnQuantity(ShoppingCart shoppingCart)
         {
             if (shoppingCart.Count <= 50) return shoppingCart.Product.Price;
