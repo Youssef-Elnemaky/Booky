@@ -1,6 +1,7 @@
 ﻿using Booky.DataAccess.Repositries.IRepository;
 using Booky.Models;
 using Booky.Models.ViewModels;
+using Booky.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -99,6 +100,76 @@ namespace BookyWeb.Areas.Customer.Controllers
             }
 
             return View("Summary", shoppingCartVM);
+        }
+
+        [HttpPost]
+        public IActionResult Summary(ShoppingCartVM shoppingCartVM)
+        {
+            //user submits after the summary 
+            //what do we need to do?
+            //order header that will contain most information about the order
+            //order detail(s) each order detail will contain information about the line item
+            //we need to make a payment so we need to initiate a payment session with stripe
+
+            //get the user
+            var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value;
+
+
+            shoppingCartVM.ShoppingCartList = _unitOfWork.ShoppingCart.GetAll(sc => sc.ApplicationUserId == userId,
+                    includeProperties: "Product");
+
+            //make a break point an try to understand what values you get from the shoppingCartVM
+            //we need to add: applicationuserid order header id is 0 paymentstatus order status order total payment date? paymentdue date
+            shoppingCartVM.OrderHeader.ApplicationUserId = userId;
+            shoppingCartVM.OrderHeader.OrderDate = DateTime.Now;
+            ApplicationUser appUser = _unitOfWork.ApplicationUser.Get(u => u.Id == userId);
+
+            //calculating total price
+            foreach (var cart in shoppingCartVM.ShoppingCartList)
+            {
+                cart.Price = GetPriceBasedOnQuantity(cart);
+                shoppingCartVM.OrderHeader.OrderTotal += (cart.Price * cart.Count);
+            }
+
+            if(appUser.CompanyId.GetValueOrDefault() == 0)
+            {
+                // normal user not a company
+                shoppingCartVM.OrderHeader.PaymentStatus = SD.PaymentStatusPending;
+                shoppingCartVM.OrderHeader.OrderStatus = SD.StatusPending;
+            } else
+            {
+                //company user state
+                shoppingCartVM.OrderHeader.PaymentStatus = SD.PaymentStatusDelayedPayment;
+                shoppingCartVM.OrderHeader.OrderStatus = SD.StatusApproved;
+            }
+
+            _unitOfWork.OrderHeader.Add(shoppingCartVM.OrderHeader);
+            _unitOfWork.Save();
+
+            foreach (var item in shoppingCartVM.ShoppingCartList)
+            {
+                OrderDetail orderDetail = new OrderDetail
+                {
+                    ProductId = item.ProductId,
+                    Count = item.Count,
+                    OrderHeaderId = shoppingCartVM.OrderHeader.Id,
+                    price = item.Price
+                };
+                _unitOfWork.OrderDetail.Add(orderDetail);
+                _unitOfWork.Save();
+            }
+
+            if(appUser.CompanyId.GetValueOrDefault() == 0)
+            {
+                // initiate a stripe session
+            }
+
+            return RedirectToAction("OrderConfirmation", new { shoppingCartVM.OrderHeader.Id });
+        }
+
+        public IActionResult OrderConfirmation(int id)
+        {
+            return View("OrderConfirmation", id);
         }
 
         private decimal GetPriceBasedOnQuantity(ShoppingCart shoppingCart)
