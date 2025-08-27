@@ -7,6 +7,7 @@ using Booky.Utility;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
+using Stripe;
 
 namespace BookyWeb
 {
@@ -21,6 +22,7 @@ namespace BookyWeb
             builder.Services.AddDbContext<AppDbContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DevConStr")));
 
+            builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
 
             builder.Services.AddIdentity<ApplicationUser,IdentityRole>(op=>op.User.RequireUniqueEmail=true)
                 .AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
@@ -53,7 +55,7 @@ namespace BookyWeb
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
+            StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
