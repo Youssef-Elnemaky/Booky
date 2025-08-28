@@ -168,7 +168,6 @@ namespace BookyWeb.Areas.Customer.Controllers
             if (appUser.CompanyId.GetValueOrDefault() == 0)
             {
                 // initiate a stripe session
-                Console.WriteLine("Stripe key loaded? " + (_config["Stripe:SecretKey"] != null));
                 StripeConfiguration.ApiKey = _config["Stripe:SecretKey"];
                 var domain = "http://localhost:5214/";
                 var options = new Stripe.Checkout.SessionCreateOptions
