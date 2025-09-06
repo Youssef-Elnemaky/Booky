@@ -1,9 +1,11 @@
-using System.Diagnostics;
-using System.Security.Claims;
+using Booky.DataAccess.Repositries;
 using Booky.DataAccess.Repositries.IRepository;
 using Booky.Models;
+using Booky.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
+using System.Security.Claims;
 
 namespace BookyWeb.Areas.Customer.Controllers
 {
@@ -61,6 +63,8 @@ namespace BookyWeb.Areas.Customer.Controllers
                 shoppingCartDb.Count += shoppingCart.Count;
             }
             unitOfWork.Save();
+            HttpContext.Session.SetInt32(SD.SessionCart,
+                unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == userId).Count());
 
             return RedirectToAction("Index");
         }
