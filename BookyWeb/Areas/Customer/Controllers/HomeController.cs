@@ -23,6 +23,12 @@ namespace BookyWeb.Areas.Customer.Controllers
 
         public IActionResult Index()
         {
+            string? userId = User.Claims?.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            if(userId!= null)
+            {
+                HttpContext.Session.SetInt32(SD.SessionCart, unitOfWork.ShoppingCart.GetAll(sc => sc.ApplicationUserId == userId).Count());
+            }
+
             IEnumerable<Product> products = unitOfWork.Product.GetAll(includeProperties: "Category");
             return View("Index", products);
         }

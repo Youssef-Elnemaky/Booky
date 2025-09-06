@@ -75,6 +75,9 @@ namespace BookyWeb.Areas.Customer.Controllers
             _unitOfWork.ShoppingCart.Delete(shoppingCart);
             _unitOfWork.Save();
 
+            string? userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            if (userId != null) HttpContext.Session.SetInt32(SD.SessionCart, _unitOfWork.ShoppingCart.GetAll(sc => sc.ApplicationUserId == userId).Count());
+
             return RedirectToAction("Index");
         }
 
