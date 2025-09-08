@@ -230,6 +230,7 @@ namespace BookyWeb.Areas.Customer.Controllers
                 List<ShoppingCart> shoppingCarts = _unitOfWork.ShoppingCart.GetAll(c => c.ApplicationUserId == orderHeader.ApplicationUserId).ToList();
                 _unitOfWork.ShoppingCart.DeleteRange(shoppingCarts);
                 _unitOfWork.Save();
+                HttpContext.Session.SetInt32(SD.SessionCart, 0);
             }
 
             
